@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
 
 import config
 from graph_generator import GraphGenerator
@@ -100,23 +99,11 @@ if __name__ == '__main__':
     plot_group_rt_distribution(config.MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP, 'Meditation')
     plot_group_rt_distribution(config.NO_MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP, 'Control')
 
-    # participants_rts_list = [[] for i in range(config.NUM_OF_PARTICIPANTS_PER_GROUP)]
-
-    # for i in range(1, config.NUM_OF_PARTICIPANTS_PER_GROUP + 1):
-    #     csv_path = config.MANIP_CSV_PATH_PREFIX.format(i=i)
-    #     participant_rts = get_rts_of_participant(csv_path, 'keyResponseStimuliOnset.rt')
-    #     participants_rts_list[i - 1] = participant_rts
-
-    # # Plot response time distribution
-    # GraphGenerator.plot_subplots([list(range(1, len(participant_rts) + 1)) for participant_rts in participants_rts_list] ,participants_rts_list, 'Trial Index', 'Response Time (s)', 'blue', 'Meditation Participant', 'Response Time Distribution of Meditation Participant')
-
     manipulation_rt = get_group_rt(config.MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP)
     no_manipulation_rt = get_group_rt(config.NO_MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP)
 
     print(f'Mean response time for manipulated group: {np.mean(manipulation_rt[0]):.3f}')
     print(f'Mean response time for non-manipulated group: {np.mean(no_manipulation_rt[0]):.3f}')
-
-    # GraphGenerator.plot_bar_chart([f'Participant {i}' for i in range(1, config.NUM_OF_PARTICIPANTS_PER_GROUP + 1)], manipulation_rt, 'Participant', 'Mean Response Time (s)', 'blue', 'Manipulated Group')
 
     manip_accs = get_group_accuracies(config.MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP)
     no_manip_accs = get_group_accuracies(config.NO_MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP)
@@ -146,6 +133,3 @@ if __name__ == '__main__':
     std_acc_no_manip = np.std(no_manip_accs)
 
     GraphGenerator.plot_bar_chart(['Meditation', 'Control'], [mean_acc_manip, mean_acc_no_manip], [std_acc_manip, std_acc_no_manip], 'Group Type', 'Accuracy', 'blue', 'Manipulated Group', 'accuracy.png')
-
-    # Extract data
-    # cols_to_extract = ['is_target', 'keyResponseStimuliOnset.keys', 'keyResponseStimuliOnset.rt']
