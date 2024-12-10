@@ -51,6 +51,21 @@ def get_group_rt(csv_group_path_prefix: str, num_of_participants: int) -> list:
         rt_list.append((mean_rt, std_rt))
     return rt_list
 
+def get_rts_of_participant(participant_data_url: str, rt_col_name: str) -> list:
+    data = pd.read_csv(participant_data_url)
+
+    target_trials_only_df = filter_df(data, lambda x: x['is_target'] == True)
+
+    # print(f'Number of target trials: {len(target_trials_df)}')
+
+    response_times = target_trials_only_df[rt_col_name]
+
+    # Remove NaN values (Only calculate response time for target stimuli trials)
+    response_times = response_times.dropna()
+    print(type(response_times))
+
+    return response_times
+
 def get_group_accuracies(csv_group_path_prefix: str, num_of_participants: int) -> list:
     accuracy_list = []
     for i in range(1, num_of_participants + 1):
@@ -61,31 +76,39 @@ def get_group_accuracies(csv_group_path_prefix: str, num_of_participants: int) -
             
     return accuracy_list
 
-def plot_rt_distribution(response_times: list, trial_indices: int):
-    # Create plot
-    # plt.scatter(trial_indices, response_times, color='blue', alpha=0.7, label='Response Times')
+def plot_group_rt_distribution(csv_group_prefix: list, num_of_participants: int, group_name: str):
 
-    plt.plot(trial_indices, response_times, color='red', linestyle='-', linewidth=2, label='Trend Line')
+    participants_rts_list = [[] for _ in range(num_of_participants)]
+
+    for i in range(1, num_of_participants + 1):
+        csv_path = csv_group_prefix.format(i=i)
+        participant_rts = get_rts_of_participant(csv_path, 'keyResponseStimuliOnset.rt')
+        participants_rts_list[i - 1] = participant_rts
+
+    # Plot response time distribution
+    GraphGenerator.plot_subplots([list(range(1, len(participant_rts) + 1)) for participant_rts in participants_rts_list]
+                                  ,participants_rts_list, 'Trial Index', 'Response Time (s)', 
+                                  'blue', f'{group_name} Participant', f'Response Time Distribution of {group_name} Participant', f'{group_name}_response_time_distribution.png')
 
 
-    # Add labels and title
-    plt.xlabel('Trial Index', fontsize=12)
-    plt.ylabel('Response Time (s)', fontsize=12)
-    plt.title('Response Times Over Trials', fontsize=14)
-
-    # Add gridlines
-    plt.grid(alpha=0.3)
-
-    # Add legend
-    plt.legend()
-
-    # Show plot
-    plt.show()
 
 def filter_df(data: pd.DataFrame, filter_func: callable) -> pd.DataFrame:
     return data[filter_func(data)]
 
 if __name__ == '__main__':
+
+    plot_group_rt_distribution(config.MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP, 'Meditation')
+    plot_group_rt_distribution(config.NO_MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP, 'Control')
+
+    # participants_rts_list = [[] for i in range(config.NUM_OF_PARTICIPANTS_PER_GROUP)]
+
+    # for i in range(1, config.NUM_OF_PARTICIPANTS_PER_GROUP + 1):
+    #     csv_path = config.MANIP_CSV_PATH_PREFIX.format(i=i)
+    #     participant_rts = get_rts_of_participant(csv_path, 'keyResponseStimuliOnset.rt')
+    #     participants_rts_list[i - 1] = participant_rts
+
+    # # Plot response time distribution
+    # GraphGenerator.plot_subplots([list(range(1, len(participant_rts) + 1)) for participant_rts in participants_rts_list] ,participants_rts_list, 'Trial Index', 'Response Time (s)', 'blue', 'Meditation Participant', 'Response Time Distribution of Meditation Participant')
 
     manipulation_rt = get_group_rt(config.MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP)
     no_manipulation_rt = get_group_rt(config.NO_MANIP_CSV_PATH_PREFIX, config.NUM_OF_PARTICIPANTS_PER_GROUP)
@@ -114,8 +137,7 @@ if __name__ == '__main__':
     mean_std_rt_no_manip = np.mean(std_rt_per_participant_no_manip)
     print(mean_std_rt_manip, mean_std_rt_no_manip)
 
-    GraphGenerator.plot_bar_chart(['Meditation', 'Control'], [mean_rt_manip, mean_rt_no_manip], [mean_std_rt_manip, mean_std_rt_no_manip], 'Group Type', 'Respone Time', 'blue', 'Manipulated Group')
-    
+    GraphGenerator.plot_bar_chart(['Meditation', 'Control'], [mean_rt_manip, mean_rt_no_manip], [mean_std_rt_manip, mean_std_rt_no_manip], 'Group Type', 'Respone Time', 'blue', 'Manipulated Group', 'response_time.png')
 
     mean_acc_manip = np.mean(manip_accs)
     std_acc_manip = np.std(manip_accs)
@@ -123,7 +145,7 @@ if __name__ == '__main__':
     mean_acc_no_manip = np.mean(no_manip_accs)
     std_acc_no_manip = np.std(no_manip_accs)
 
-    GraphGenerator.plot_bar_chart(['Meditation', 'Control'], [mean_acc_manip, mean_acc_no_manip], [std_acc_manip, std_acc_no_manip], 'Group Type', 'Accuracy', 'blue', 'Manipulated Group')
+    GraphGenerator.plot_bar_chart(['Meditation', 'Control'], [mean_acc_manip, mean_acc_no_manip], [std_acc_manip, std_acc_no_manip], 'Group Type', 'Accuracy', 'blue', 'Manipulated Group', 'accuracy.png')
 
     # Extract data
     # cols_to_extract = ['is_target', 'keyResponseStimuliOnset.keys', 'keyResponseStimuliOnset.rt']

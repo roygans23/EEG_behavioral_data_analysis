@@ -23,7 +23,7 @@ class GraphGenerator:
         plt.show()
 
     @staticmethod
-    def plot_bar_chart(x: list, y: list, yerr: list, x_name: str, y_name: str, color: str, label: str, capsize: int = 5):
+    def plot_bar_chart(x: list, y: list, yerr: list, x_name: str, y_name: str, color: str, label: str, save_file_name: str, capsize: int = 5):
         plt.bar(x, y, color=color, label=label, yerr=yerr, capsize=capsize)
 
         # Annotate each point with its value
@@ -32,5 +32,40 @@ class GraphGenerator:
 
         plt.xlabel(x_name)
         plt.ylabel(y_name)
-        plt.legend()
-        plt.show()
+        # plt.legend()
+        # plt.show()
+
+        plt.savefig(f'data/graphs/{save_file_name}')
+        plt.close()
+
+    @staticmethod
+    def plot_subplots(x: list[list], y: list[list], x_name: str, y_name: str, color: str, label_prefix: str, title_prefix: str, save_file_name: str):
+        # Number of subplots needed
+        num_plots = len(x)
+
+        # Determine the grid size (e.g., 2x2, 3x3, etc. based on the number of plots)
+        cols = 2
+        rows = (num_plots // cols) + (num_plots % cols)
+
+        # Create a grid of subplots
+        fig, axs = plt.subplots(rows, cols, figsize=(10, 8))
+
+        # Flatten axs to easily iterate if there's more than one row
+        axs = axs.flatten()
+
+        # Plot each dataset
+        for i in range(num_plots):
+            axs[i].plot(x[i], y[i], label=f'{label_prefix} {i+1}')
+            axs[i].set_title(f'{title_prefix} {i+1}')
+            axs[i].set_xlabel(x_name)
+            axs[i].set_ylabel(y_name)
+            axs[i].legend()
+
+        # Adjust the layout to avoid overlap
+        fig.tight_layout()
+
+        # Show the plot
+        # plt.show()
+
+        plt.savefig(f'data/graphs/{save_file_name}')
+        plt.close()
