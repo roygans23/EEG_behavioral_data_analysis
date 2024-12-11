@@ -21,7 +21,7 @@ def get_accuracy(data_url: str, filter_func: callable) -> float:
     # print(data)
     correct_trials = filter_df(data, filter_func)
     print(f'Number of correct trials: {len(correct_trials)} / {len(data)}')
-    accuracy = len(correct_trials) / len(data)
+    accuracy = len(correct_trials) / len(data) * 100
     return accuracy
 
 def get_rt_metrics(data_url: str, rt_col_name: str) -> pd.DataFrame:
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     mean_std_rt_no_manip = np.mean(std_rt_per_participant_no_manip)
     print(mean_std_rt_manip, mean_std_rt_no_manip)
 
-    GraphGenerator.plot_bar_chart(['Control', 'Meditation'], [mean_rt_no_manip, mean_rt_manip], [mean_std_rt_no_manip, mean_std_rt_manip], 'Group Type', 'Respone Time', ['gray', 'green'], 'Manipulated Group', 'response_time.png')
+    GraphGenerator.plot_bar_chart(['Control', 'Meditation'], [mean_rt_no_manip, mean_rt_manip], [mean_std_rt_no_manip, mean_std_rt_manip], 'Group Type', 'Respone Time (Seconds)', ['gray', 'green'], 'Manipulated Group', 'response_time.png')
 
     mean_acc_manip = np.mean(manip_accs)
     std_acc_manip = np.std(manip_accs)
@@ -130,4 +130,4 @@ if __name__ == '__main__':
     mean_acc_no_manip = np.mean(no_manip_accs)
     std_acc_no_manip = np.std(no_manip_accs)
 
-    GraphGenerator.plot_bar_chart(['Control', 'Meditation'], [mean_acc_no_manip, mean_acc_manip], [std_acc_no_manip, std_acc_manip], 'Group Type', 'Accuracy', ['gray', 'green'], 'Manipulated Group', 'accuracy.png')
+    GraphGenerator.plot_bar_chart(['Control', 'Meditation'], [mean_acc_no_manip, mean_acc_manip], [std_acc_no_manip, std_acc_manip], 'Group Type', 'Accuracy (%)', ['gray', 'green'], 'Manipulated Group', 'accuracy.png')
