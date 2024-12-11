@@ -89,8 +89,6 @@ def plot_group_rt_distribution(csv_group_prefix: list, num_of_participants: int,
                                   ,participants_rts_list, 'Trial Index', 'Response Time (s)', 
                                   'blue', f'{group_name} Participant', f'Response Time Distribution of {group_name} Participant', f'{group_name}_response_time_distribution.png')
 
-
-
 def filter_df(data: pd.DataFrame, filter_func: callable) -> pd.DataFrame:
     return data[filter_func(data)]
 
@@ -124,7 +122,7 @@ if __name__ == '__main__':
     mean_std_rt_no_manip = np.mean(std_rt_per_participant_no_manip)
     print(mean_std_rt_manip, mean_std_rt_no_manip)
 
-    GraphGenerator.plot_bar_chart(['Meditation', 'Control'], [mean_rt_manip, mean_rt_no_manip], [mean_std_rt_manip, mean_std_rt_no_manip], 'Group Type', 'Respone Time', 'blue', 'Manipulated Group', 'response_time.png')
+    GraphGenerator.plot_bar_chart(['Control', 'Meditation'], [mean_rt_no_manip, mean_rt_manip], [mean_std_rt_no_manip, mean_std_rt_manip], 'Group Type', 'Respone Time', ['gray', 'green'], 'Manipulated Group', 'response_time.png')
 
     mean_acc_manip = np.mean(manip_accs)
     std_acc_manip = np.std(manip_accs)
@@ -132,4 +130,4 @@ if __name__ == '__main__':
     mean_acc_no_manip = np.mean(no_manip_accs)
     std_acc_no_manip = np.std(no_manip_accs)
 
-    GraphGenerator.plot_bar_chart(['Meditation', 'Control'], [mean_acc_manip, mean_acc_no_manip], [std_acc_manip, std_acc_no_manip], 'Group Type', 'Accuracy', 'blue', 'Manipulated Group', 'accuracy.png')
+    GraphGenerator.plot_bar_chart(['Control', 'Meditation'], [mean_acc_no_manip, mean_acc_manip], [std_acc_no_manip, std_acc_manip], 'Group Type', 'Accuracy', ['gray', 'green'], 'Manipulated Group', 'accuracy.png')

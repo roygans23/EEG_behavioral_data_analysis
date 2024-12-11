@@ -23,8 +23,8 @@ class GraphGenerator:
         plt.show()
 
     @staticmethod
-    def plot_bar_chart(x: list, y: list, yerr: list, x_name: str, y_name: str, color: str, label: str, save_file_name: str, capsize: int = 5):
-        plt.bar(x, y, color=color, label=label, yerr=yerr, capsize=capsize)
+    def plot_bar_chart(x: list, y: list, yerr: list, x_name: str, y_name: str, colors: list[str], label: str, save_file_name: str, width = 0.5, capsize: int = 5):
+        plt.bar(x, y, color=colors, label=label, yerr=yerr, width=width, capsize=capsize)
 
         # Annotate each point with its value
         for i, value in enumerate(y):
